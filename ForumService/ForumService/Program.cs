@@ -12,4 +12,9 @@ builder.Services.AddTransient<IMessageService, MessageService>();
 
 var app = builder.Build();
 
+app.MapControllers();
+app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.Run();
