@@ -14,6 +14,8 @@ namespace DAL
 
         public DbSet<AttachmentToTopic> Attachments { get; set; }
 
+        public DbSet<FileModel> FileModels { get; set; }
+
         public ApplicationDbContext()
         {
             Database.EnsureCreated();

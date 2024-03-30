@@ -12,6 +12,11 @@ namespace DAL.Configuration
 				   .WithOne()
 				   .HasForeignKey<Message>(m => m.ParentMessageId)
 				   .OnDelete(DeleteBehavior.Cascade);
+
+			builder.HasMany(m => m.Files)
+				   .WithOne(f => f.Message)
+				   .HasForeignKey(f => f.MessageId)
+				   .OnDelete(DeleteBehavior.Cascade); //TODO: make the correct deletion of files from the wwwroot folder
 		}
 	}
 }

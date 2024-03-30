@@ -16,8 +16,8 @@ namespace Domain.Entity
 
         public DateTime CreatedAt { get; set; }
 
-		public virtual IEnumerable<Message> Messages { get; set; }
+		public virtual ICollection<Message> Messages { get; set; }
 
-		public virtual IEnumerable<AttachmentToTopic> Attachmnets { get; set; }
+		public virtual ICollection<AttachmentToTopic> Attachmnets { get; set; }
 	}
 }
