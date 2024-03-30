@@ -2,6 +2,7 @@
 using Domain.Entity;
 using Domain.Response;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Service.DTO;
 using Service.Interface;
 using System;
@@ -51,15 +52,49 @@ namespace Service.Implementation
 				await _context.Messages.AddAsync(message);
 				await _context.SaveChangesAsync();
 
+				if(model.FilesId != null && model.FilesId.Length > 0) 
+				{
+					var filesToUpdate = await _context.FileModels.Where(f => model.FilesId.Contains(f.Id)).ToListAsync();
+					filesToUpdate.ForEach(f => f.MessageId = message.Id);
+
+					await _context.SaveChangesAsync();
+				}
+
 				response.Data = message;
 				response.StatusCode = HttpStatusCode.OK;
 
 				return response;
-
 			}
 			catch (Exception ex)
 			{
 				response.Message = $"Error while adding message: {ex.Message}";
+				response.StatusCode = HttpStatusCode.InternalServerError;
+
+				return response;
+			}
+		}
+
+		public async Task<BaseResponse<Message>> CreateAsync(byte[] byteArray)
+		{
+			var response = new BaseResponse<Message>();
+
+			try
+			{
+				string jsonString = Encoding.UTF8.GetString(byteArray);
+				var model = JsonConvert.DeserializeObject<MessageDTO>(jsonString);
+
+				if(model != null ) 
+				{
+					response.StatusCode = HttpStatusCode.BadRequest;
+
+					return response;
+				}
+
+				return await CreateAsync(model);
+			}
+			catch (Exception ex)
+			{
+				response.Message = $"Error while converting byte array to message: {ex.Message}";
 				response.StatusCode = HttpStatusCode.InternalServerError;
 
 				return response;
@@ -98,7 +133,7 @@ namespace Service.Implementation
 			}
 		}
 
-		public async Task<BaseResponse<IEnumerable<Message>>> GetAsyncByTopic(long topicId)
+		public async Task<BaseResponse<IEnumerable<Message>>> GetByTopicAsync(long topicId)
 		{
 			var response = new BaseResponse<IEnumerable<Message>>();
 
@@ -128,7 +163,7 @@ namespace Service.Implementation
 			}
 		}
 
-		public async Task<BaseResponse<IEnumerable<Message>>> GetAsyncByUserAndTopic(long userId, long topicId)
+		public async Task<BaseResponse<IEnumerable<Message>>> GetByUserAndTopicAsync(long userId, long topicId)
 		{
 			var response = new BaseResponse<IEnumerable<Message>>();
 
@@ -179,6 +214,21 @@ namespace Service.Implementation
 
 				_context.Messages.Update(messageToUpdate);
 				await _context.SaveChangesAsync();
+
+				if(model.FilesId != null &&  model.FilesId.Length > 0)
+				{
+					var existedFiles = await _context.FileModels.Where(f => f.Id == messageToUpdate.Id).ToListAsync();
+					var deleteCondition = existedFiles.Select(f => f.Id).Except(model.FilesId);
+					var updateCondition = model.FilesId.Except(existedFiles.Select(f => f.Id));
+
+					var filesToDelete = await _context.FileModels.Where(f => deleteCondition.Contains(f.Id)).ToListAsync();
+					var filesToUpdate = await _context.FileModels.Where(f => updateCondition.Contains(f.Id)).ToListAsync();
+
+					filesToDelete.ForEach(f => f.MessageId = 0);
+					filesToUpdate.ForEach(f => f.MessageId = messageToUpdate.Id);
+
+					await _context.SaveChangesAsync();
+				}
 
 				response.Data = messageToUpdate;
 				response.StatusCode = HttpStatusCode.OK;

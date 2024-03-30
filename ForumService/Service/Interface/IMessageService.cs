@@ -8,12 +8,14 @@ namespace Service.Interface
 	{
 		public Task<BaseResponse<Message>> CreateAsync(MessageDTO model);
 
+		public Task<BaseResponse<Message>> CreateAsync(byte[] byteArray);
+
 		public Task<BaseResponse<Message>> UpdateAsync(MessageDTO model);
 
 		public Task<BaseResponse<Message>> DeleteAsync(long id);
 
-		public Task<BaseResponse<IEnumerable<Message>>> GetAsyncByTopic(long topicId);
+		public Task<BaseResponse<IEnumerable<Message>>> GetByTopicAsync(long topicId);
 
-		public Task<BaseResponse<IEnumerable<Message>>> GetAsyncByUserAndTopic(long userId, long topicId);
+		public Task<BaseResponse<IEnumerable<Message>>> GetByUserAndTopicAsync(long userId, long topicId);
 	}
 }
