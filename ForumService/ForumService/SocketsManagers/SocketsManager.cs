@@ -30,5 +30,10 @@ namespace ForumService.SocketsManagers
 			connections.TryGetValue(topicId, out List<WebSocket>? sockets);
 			return sockets;
 		}
+
+		public ConcurrentDictionary<long, List<WebSocket>> GetAllConnections()
+		{
+			return connections;
+		}
 	}
 }
