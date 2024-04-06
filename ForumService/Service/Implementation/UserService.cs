@@ -32,7 +32,7 @@ namespace Service.Implementation
 				var user = new User
 				{
 					Nickname = model.Nickname,
-					CreatedAt = DateTime.Now,
+					CreatedAt = DateTime.UtcNow,
 				};
 
 				await _context.Users.AddAsync(user);
