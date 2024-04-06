@@ -17,7 +17,7 @@ namespace ForumService.Controllers
 			_service = service;
 		}
 
-		[Authorize]
+		//[Authorize]
 		[HttpPost]
 		[Route("topics")]
 		public async Task<IActionResult> AddTopic([FromBody] TopicDTO model)
@@ -61,7 +61,7 @@ namespace ForumService.Controllers
 		}
 
 		[HttpGet]
-		[Route("topics")]
+		[Route("topic")]
 		public async Task<IActionResult> GetTopic([FromQuery] long id)
 		{
 			if (ModelState.IsValid)

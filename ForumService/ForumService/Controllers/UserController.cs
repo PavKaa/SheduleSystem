@@ -17,7 +17,7 @@ namespace ForumService.Controllers
 			_service = service;
 		}
 
-		[Authorize]
+		//[Authorize]
 		[HttpPost]
 		[Route("users")]
 		public async Task<IActionResult> AddUser([FromBody] UserDTO model)
@@ -63,7 +63,7 @@ namespace ForumService.Controllers
 
 		[Authorize]
 		[HttpGet]
-		[Route("users")]
+		[Route("user")]
 		public async Task<IActionResult> GetUser([FromQuery] long id)
 		{
 			if (ModelState.IsValid)
