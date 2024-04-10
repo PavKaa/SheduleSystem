@@ -9,9 +9,10 @@ namespace DAL.Configuration
 		public void Configure(EntityTypeBuilder<Message> builder)
 		{
 			builder.HasOne(m => m.ParentMessage)
-				   .WithOne()
-				   .HasForeignKey<Message>(m => m.ParentMessageId)
-				   .OnDelete(DeleteBehavior.Cascade);
+				   .WithMany(m => m.Replies)
+				   .HasForeignKey(m => m.ParentMessageId)
+				   .IsRequired(false)
+				   .OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasMany(m => m.Files)
 				   .WithOne(f => f.Message)

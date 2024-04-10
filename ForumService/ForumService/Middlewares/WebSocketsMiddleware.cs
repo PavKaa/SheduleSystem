@@ -18,7 +18,8 @@ namespace ForumService.Middlewares
 
 		public async Task Invoke(HttpContext context, SocketsHandler<Message> socketsHandler)
 		{
-			if (context.WebSockets.IsWebSocketRequest)
+
+			if (/*context.User != null && context.User.Identity.IsAuthenticated &&*/ context.WebSockets.IsWebSocketRequest)
 			{
 				var socket = await context.WebSockets.AcceptWebSocketAsync();
 
@@ -27,40 +28,46 @@ namespace ForumService.Middlewares
 					await socketsHandler.OnConnected(socket, topicId);
 				}
 
-				//await Receive(socket, async (result, buffer) =>
-				//{
-				//	if (result.MessageType == WebSocketMessageType.Text)
-				//	{
-				//		await SocketsHandler.Receive(socket, result, buffer);
-				//	}
-				//	else if (result.MessageType == WebSocketMessageType.Close)
-				//	{
-				//		await SocketsHandler.OnDisconnected(socket);
-				//	}
-				//});
+				await Receive(socket, async (result, buffer) =>
+				{
+					if (result.MessageType == WebSocketMessageType.Text)
+					{
+						await socketsHandler.Receive(socket, result, buffer);
+					}
+					else if (result.MessageType == WebSocketMessageType.Close)
+					{
+						await socketsHandler.OnDisconnected(socket, topicId);
+					}
+				});
 			}
 
 			await next.Invoke(context);
 		}
 
-		//private async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> messageHandler)
-		//{
-		//	var buffer = new byte[4096];
-		//	var message = new List<byte>();
-		//	WebSocketReceiveResult result;
+		private async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> messageHandler)
+		{
+			var buffer = new byte[4096];
+			var message = new List<byte>();
+			WebSocketReceiveResult result;
 
-		//	do
-		//	{
-		//		result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+			do
+			{
+				result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
-		//		if (result.MessageType == WebSocketMessageType.Text)
-		//		{
-		//			message.AddRange(buffer.Take(result.Count));
-		//		}
-		//	} 
-		//	while (!result.EndOfMessage);
+				if (result.MessageType == WebSocketMessageType.Text)
+				{
+					message.AddRange(buffer.Take(result.Count));
+				}
 
-		//	await SocketsHandler.Receive(socket, result, message.ToArray());
-		//}
+				if(result.EndOfMessage)
+				{
+					messageHandler(result, message.ToArray());
+					message.Clear();
+				}
+			}
+			while (socket.State == WebSocketState.Open);
+
+			//await socketsHandler.Receive(socket, result, message.ToArray());
+		}
 	}
 }

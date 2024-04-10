@@ -22,10 +22,10 @@ namespace PersonalAccountService.Controllers
 			logger.LogDebug(2, "NLog injected into UserController");
 		}
 
-		
+		[AllowAnonymous]
 		[Route("users")]
 		[HttpPost]
-		public async Task<ActionResult> AddNewUser([FromBody] UserDTO model)
+		public async Task<ActionResult> AddNewUser([FromBody] CreateUserDTO model)
 		{
 			logger.LogInformation("Adding new user request", model);
 
@@ -36,7 +36,7 @@ namespace PersonalAccountService.Controllers
 				if(response.StatusCode == HttpStatusCode.OK)
 				{
 					logger.LogInformation("Adding new user request: successful added new user", response.Data);
-					return Json(response.Data);
+					return Ok();
 				}
 
 				logger.LogWarning("Adding new user request: internal server error while adding new user", response.Message);

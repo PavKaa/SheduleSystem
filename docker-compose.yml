@@ -1,0 +1,34 @@
+version: "3.9"
+networks:
+  EzLearn:
+    driver: bridge
+
+services:
+  forum_service:
+    container_name: forum_service
+    build:
+      context: ./ForumService
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - EzLearn
+    depends_on:
+      - postgres_db
+
+  postgres_db:
+    container_name: postgres_db
+    image: postgres:16.2-alpine3.19
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: Forum
+    ports:
+      - "5440:5432"
+    networks:
+      - EzLearn
+    volumes:
+      - postgres-data:/var/lib/postrgesql/data
+
+volumes:
+  postgres-data:

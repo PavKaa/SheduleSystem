@@ -42,7 +42,7 @@ namespace Service.Implementation
 				{
 					Title = model.Title,
 					CreatorId = model.CreatorId,
-					CreatedAt = DateTime.Now,
+					CreatedAt = DateTime.UtcNow,
 				};
 
 				await _context.Topics.AddAsync(topic);

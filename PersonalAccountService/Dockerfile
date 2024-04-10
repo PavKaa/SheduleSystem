@@ -2,15 +2,18 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 8080
+EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["PersonalAccountService/PersonalAccountService.csproj", "PersonalAccountService/"]
-RUN dotnet restore "PersonalAccountService/PersonalAccountService.csproj"
+COPY ./PersonalAccountService/PersonalAccountService.csproj, ./PersonalAccountService/
+COPY ./BusinessLogic/BusinessLogic.csproj, ./BusinessLogic/
+COPY ./DAL/DAL.csproj, ./DAL/
+RUN dotnet restore ./PersonalAccountService/PersonalAccountService.csproj
+
 COPY . .
-WORKDIR "/src/PersonalAccountService"
+WORKDIR /src/PersonalAccountService
 RUN dotnet build "PersonalAccountService.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -43,8 +43,8 @@ namespace Service.Implementation
 				var message = new Message
 				{
 					Content = model.Content,
-					CreatedAt = DateTime.Now,
-					ParentMessageId = model.ParentMessageId ?? 0,
+					CreatedAt = DateTime.UtcNow,
+					ParentMessageId = model?.ParentMessageId,
 					UserId = model.UserId,
 					TopicId = model.TopicId
 				};
@@ -83,7 +83,7 @@ namespace Service.Implementation
 				string jsonString = Encoding.UTF8.GetString(byteArray);
 				var model = JsonConvert.DeserializeObject<MessageDTO>(jsonString);
 
-				if(model != null ) 
+				if(model == null) 
 				{
 					response.StatusCode = HttpStatusCode.BadRequest;
 
