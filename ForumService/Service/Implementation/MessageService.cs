@@ -149,7 +149,7 @@ namespace Service.Implementation
 					return response;
 				}
 
-				response.Data = topic.Messages;
+				response.Data = await _context.Messages.Where(t => t.TopicId == topicId).ToListAsync();
 				response.StatusCode = HttpStatusCode.OK;
 
 				return response;
@@ -180,7 +180,7 @@ namespace Service.Implementation
 					return response;
 				}
 
-				response.Data = user.Messages.Where(m => m.TopicId == topicId);
+				response.Data = await _context.Messages.Where(t => t.TopicId == topicId && t.UserId == userId).ToListAsync();
 				response.StatusCode = HttpStatusCode.OK;
 
 				return response;

@@ -1,6 +1,8 @@
 version: "3.9"
 networks:
-  EzLearn:
+  ForumService:
+    driver: bridge
+  PersonalAccountService:
     driver: bridge
 
 services:
@@ -12,7 +14,7 @@ services:
     ports:
       - "8080:80"
     networks:
-      - EzLearn
+      - ForumService
     depends_on:
       - postgres_db
 
@@ -24,11 +26,34 @@ services:
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: Forum
     ports:
-      - "5440:5432"
+      - "5432"
     networks:
-      - EzLearn
+      - ForumService
     volumes:
       - postgres-data:/var/lib/postrgesql/data
 
+  personal_account_service:
+    container_name: personal_account_service
+    build: 
+      context: ./PersonalAccountService
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+    networks:
+      - PersonalAccountService
+    depends_on:
+      - mongo_db
+
+  mongo_db:
+    image: mongo:latest
+    ports:
+      - "27017"
+    environment:
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+    networks:
+      - PersonalAccountService
+
 volumes:
   postgres-data:
+  mongoDb-data:
