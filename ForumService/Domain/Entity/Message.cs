@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entity
 {
-	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class Message
 	{
 		public long Id { get; set; }

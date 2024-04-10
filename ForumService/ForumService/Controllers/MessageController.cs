@@ -18,7 +18,7 @@ namespace ForumService.Controllers
 		}
 
 		[AllowAnonymous]
-		[HttpPost]
+		[HttpGet]
 		[Route("messages")]
 		public async Task<IActionResult> GetMessagesByTopic([FromQuery] long topicId)
 		{
