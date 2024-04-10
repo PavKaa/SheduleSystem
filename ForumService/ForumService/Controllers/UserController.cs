@@ -39,7 +39,7 @@ namespace ForumService.Controllers
 			}
 		}
 
-		[Authorize]
+		[AllowAnonymous]
 		[HttpGet]
 		[Route("users")]
 		public async Task<IActionResult> GetAllUsers()
@@ -61,7 +61,7 @@ namespace ForumService.Controllers
 			}
 		}
 
-		[Authorize]
+		[AllowAnonymous]
 		[HttpGet]
 		[Route("user")]
 		public async Task<IActionResult> GetUser([FromQuery] long id)

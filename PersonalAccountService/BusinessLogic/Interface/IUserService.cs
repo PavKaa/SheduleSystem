@@ -12,7 +12,7 @@ namespace BusinessLogic.Interface
 {
     public interface IUserService
     {
-        Task<BaseResponse<User>> Create(UserDTO model);
+        Task<BaseResponse<User>> Create(CreateUserDTO model);
 
         Task<BaseResponse<User>> Find(string id);
 

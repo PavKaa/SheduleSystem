@@ -15,7 +15,7 @@ namespace BusinessLogic.DTO
 		public string LastName { get; set; }
 
 		public string Group { get; set; }
-
+		
         public string UserId { get; set; }
     }
 }

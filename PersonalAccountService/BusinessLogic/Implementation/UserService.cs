@@ -19,7 +19,7 @@ namespace BusinessLogic.Implementation
 			this.context = context;
 		}
 
-		public async Task<BaseResponse<User>> Create(UserDTO model)
+		public async Task<BaseResponse<User>> Create(CreateUserDTO model)
 		{
 			var response = new BaseResponse<User>();
 
@@ -44,11 +44,22 @@ namespace BusinessLogic.Implementation
 					Id = ObjectId.GenerateNewId().ToString(),
 					Email = model.Email,
 					Login = model.Login,
-					HashPassword = dictionary["hash"],
+					HashPassword = dictionary["hash"],	
 					Salt = dictionary["salt"]
 				};
 
 				await context.Users.InsertOneAsync(user);
+
+				var userData = new UserData()
+				{
+					Id = ObjectId.GenerateNewId().ToString(),
+					Group = model.Group,
+					Name = model.Name,
+					LastName = model.LastName,
+					UserId = user.Id
+				};
+
+				await context.UsersData.InsertOneAsync(userData);
 
 				response.Data = user;
 				response.StatusCode = HttpStatusCode.OK;

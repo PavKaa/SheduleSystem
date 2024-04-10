@@ -39,6 +39,7 @@ namespace ForumService.Controllers
 			}
 		}
 
+		[AllowAnonymous]
 		[HttpGet]
 		[Route("topics")]
 		public async Task<IActionResult> GetAllTopics()
@@ -60,6 +61,7 @@ namespace ForumService.Controllers
 			}
 		}
 
+		[AllowAnonymous]
 		[HttpGet]
 		[Route("topic")]
 		public async Task<IActionResult> GetTopic([FromQuery] long id)
